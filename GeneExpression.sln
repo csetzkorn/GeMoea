@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2005
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneExpression", "GeneExpression\GeneExpression.csproj", "{54E36148-F688-496E-9DC2-12FC9BFBBC89}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{54E36148-F688-496E-9DC2-12FC9BFBBC89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54E36148-F688-496E-9DC2-12FC9BFBBC89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54E36148-F688-496E-9DC2-12FC9BFBBC89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54E36148-F688-496E-9DC2-12FC9BFBBC89}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3A08213D-F499-4483-9A00-17A40F1D99D4}
+	EndGlobalSection
+EndGlobal
