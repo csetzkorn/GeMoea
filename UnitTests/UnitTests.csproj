@@ -55,6 +55,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GenoType\GenoTypeFactoryTests.cs" />
+    <Compile Include="PhenoTypeTree\GeneToPhenoTypeTests.cs" />
     <Compile Include="Terminals\FeatureTerminals.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -65,11 +67,16 @@
     <Analyzer Include="..\packages\xunit.analyzers.0.7.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EvolutionaryAlgorithm\EvolutionaryAlgorithm.csproj">
+      <Project>{686167de-9be0-43c8-ae9e-213cf0d8547f}</Project>
+      <Name>EvolutionaryAlgorithm</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GeneExpression\GeneExpression.csproj">
       <Project>{54e36148-f688-496e-9dc2-12fc9bfbbc89}</Project>
       <Name>GeneExpression</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

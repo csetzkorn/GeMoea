@@ -1,4 +1,4 @@
-﻿namespace GeneExpression
+﻿namespace GeneExpression.Functions
 {
     public class SquareRoot : FunctionArity1
     {

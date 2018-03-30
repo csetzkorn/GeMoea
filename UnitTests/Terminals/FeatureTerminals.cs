@@ -1,4 +1,4 @@
-﻿using GeneExpression;
+﻿using GeneExpression.Terminals;
 using Xunit;
 
 namespace UnitTests.Terminals
@@ -14,7 +14,7 @@ namespace UnitTests.Terminals
         [Fact]
         public void CanCreateAndObtainStringFromFeature()
         {
-            var featureString = "X1";
+            const string featureString = "X1";
             var feature = new FeatureTerminal(featureString);
 
             Assert.Equal(featureString, feature.ToString());

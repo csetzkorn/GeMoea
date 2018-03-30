@@ -1,6 +1,6 @@
-﻿namespace GeneExpression
+﻿namespace GeneExpression.Terminals
 {
-    public class FeatureTerminal : ITerminal
+    public class FeatureTerminal : Terminal
     {
         public string FeatureName { get; set; }
 

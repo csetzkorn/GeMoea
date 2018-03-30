@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GeneExpression
+﻿namespace GeneExpression.Functions
 {
     public abstract class FunctionArity1 : IFunction
     {
         public string FunctionName { get; set; }
+        public bool Middle { get; set; }
 
         protected FunctionArity1(string functionName)
         {
@@ -17,7 +12,7 @@ namespace GeneExpression
 
         public int GetArity()
         {
-            return 2;
+            return 1;
         }
 
         public override string ToString()
