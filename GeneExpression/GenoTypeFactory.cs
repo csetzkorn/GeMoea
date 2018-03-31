@@ -3,7 +3,7 @@ using GeneExpression.Terminals;
 
 namespace GeneExpression
 {
-    public class GenoTypeFactory
+    public class GenoTypeFactory : IGenoTypeFactory
     {
         private IEaGeneExpressionParameters EaGeneExpressionParameters { get; }
         private IUniformRandomGenerator UniformRandomGenerator { get; }
@@ -26,17 +26,7 @@ namespace GeneExpression
 
             for (var c = 0; c < EaGeneExpressionParameters.MaximumNumberOfHeadNodes; c++)
             {
-                if (UniformRandomGenerator.GetContinousRandomNumber(0, 1.0) < EaGeneExpressionParameters.FunctionProbability)
-                {
-                    var node = EaGeneExpressionParameters.PossibleFunctions[
-                        UniformRandomGenerator.GetIntegerRandomNumber(0, NumberOfPossibleFunctions)];
-
-                    genoType.GenoTypeNodes.Add(node);
-                }
-                else
-                {
-                    genoType.GenoTypeNodes.Add(GetTerminalNode());
-                }
+                genoType.GenoTypeNodes.Add(GetFunctionOrTerminalNode());
             }
 
             for (var c = 0; c < EaGeneExpressionParameters.MaximumNumberOTailNodes; c++)
@@ -47,11 +37,14 @@ namespace GeneExpression
             return genoType;
         }
 
-        private IGenoTypeNode GetTerminalNode()
+        public IGenoTypeNode GetFunctionOrTerminalNode()
         {
-            // TODO generation of parameternode via factory
-            //ParameterTerminalFactory
+            return UniformRandomGenerator.GetContinousRandomNumber(0, 1.0) <
+                   EaGeneExpressionParameters.FunctionProbability ? GetFunctionNode() : GetTerminalNode();
+        }
 
+        public IGenoTypeNode GetTerminalNode()
+        {
             if (UniformRandomGenerator.GetContinousRandomNumber(0, 1.0) <
                 EaGeneExpressionParameters.ParameterProbability)
             {
@@ -60,6 +53,12 @@ namespace GeneExpression
 
             return EaGeneExpressionParameters.PossibleTerminals[
                 UniformRandomGenerator.GetIntegerRandomNumber(0, NumberOfPossibleTerminals)];
+        }
+
+        public IGenoTypeNode GetFunctionNode()
+        {
+            return EaGeneExpressionParameters.PossibleFunctions[
+                UniformRandomGenerator.GetIntegerRandomNumber(0, NumberOfPossibleFunctions)];
         }
     }
 }

@@ -41,7 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EaGeneExpressionParameters.cs" />
-    <Compile Include="Functions\Cos.cs" />
+    <Compile Include="Functions\Cosinus.cs" />
     <Compile Include="Functions\Division.cs" />
     <Compile Include="Functions\Exp.cs" />
     <Compile Include="Functions\FunctionArity1.cs" />
@@ -51,10 +51,15 @@
     <Compile Include="Functions\Minus.cs" />
     <Compile Include="Functions\Multiplication.cs" />
     <Compile Include="Functions\Not.cs" />
-    <Compile Include="Functions\Sin.cs" />
+    <Compile Include="Functions\Sinus.cs" />
     <Compile Include="GenoType.cs" />
+    <Compile Include="Crossover\GenoTypeCrossoveratorBasic1.cs" />
     <Compile Include="GenoTypeFactory.cs" />
     <Compile Include="IEaGeneExpressionParameters.cs" />
+    <Compile Include="Crossover\IGenoTypeCrossoverator.cs" />
+    <Compile Include="IGenoTypeFactory.cs" />
+    <Compile Include="Mutation\GenoTypeMutatorBasic1.cs" />
+    <Compile Include="Mutation\IGenoTypeMutator.cs" />
     <Compile Include="IGenoTypeNode.cs" />
     <Compile Include="IGenoType.cs" />
     <Compile Include="IPhenoTypeNode.cs" />

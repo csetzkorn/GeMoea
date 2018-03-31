@@ -70,8 +70,8 @@ namespace UnitTests.PhenoTypeTree
                 new Maximum(),
                 new Not(),
                 new Exp(),
-                new Sin(),
-                new Cos()
+                new Sinus(),
+                new Cosinus()
             };
 
             var possibleTerminals = new List<IGenoTypeNode>

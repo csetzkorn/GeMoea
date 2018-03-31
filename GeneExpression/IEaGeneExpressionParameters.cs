@@ -21,5 +21,8 @@ namespace GeneExpression
         double ParameterMinimum { get; set; }
         double ParameterMaximum { get; set; }
         bool ParameterTypeInteger { get; set; } // if true only integers allowed
+
+        double CrossoverProbability { get; set; }
+        double MutationProbability { get; set; }
     }
 }

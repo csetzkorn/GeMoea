@@ -20,6 +20,8 @@ namespace GeneExpression
         public double ParameterMinimum { get; set; }
         public double ParameterMaximum { get; set; }
         public bool ParameterTypeInteger { get; set; }
+        public double CrossoverProbability { get; set; }
+        public double MutationProbability { get; set; }
 
         public EaGeneExpressionParameters(
             int maximumNumberOfHeadNodes
@@ -30,9 +32,12 @@ namespace GeneExpression
             ,double constantProbability = 0.5
             ,double parametertProbability = 0.5
 
-            , double parameterMinimum = -100
+            ,double parameterMinimum = -100
             ,double parameterMaximum = 100
             ,bool parameterType = false
+
+            ,double crossoverProbability = 0.7
+            ,double mutationProbability = 0.01
         )
         {
             MaximumNumberOfHeadNodes = maximumNumberOfHeadNodes;
@@ -52,6 +57,9 @@ namespace GeneExpression
             ParameterMinimum = parameterMinimum;
             ParameterMaximum = parameterMaximum;
             ParameterTypeInteger = parameterType;
+
+            CrossoverProbability = crossoverProbability;
+            MutationProbability = mutationProbability;
 
             // http://www.ebyte.it/library/educards/constants/MathConstants.html
             PossibleConstants = new List<Constant>

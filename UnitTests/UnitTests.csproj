@@ -55,6 +55,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Crossover\CrossoverTests.cs" />
     <Compile Include="GenoType\GenoTypeFactoryTests.cs" />
     <Compile Include="PhenoTypeTree\GeneToPhenoTypeTests.cs" />
     <Compile Include="Terminals\FeatureTerminals.cs" />
