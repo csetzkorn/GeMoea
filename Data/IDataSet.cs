@@ -6,6 +6,6 @@
         string[,] OriginalData { get; set; }
         double[,] MappedData { get; set; }
 
-        int GetNumberOfRows
+        //int GetNumberOfRows
     }
 }

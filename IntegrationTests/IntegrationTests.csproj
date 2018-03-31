@@ -5,11 +5,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{ABFA4DFF-8885-4E41-B7C7-354C7295A425}</ProjectGuid>
+    <ProjectGuid>{DEFAE708-2441-4B75-9C93-4C3271EF672B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>UnitTests</RootNamespace>
-    <AssemblyName>UnitTests</AssemblyName>
+    <RootNamespace>IntegrationTests</RootNamespace>
+    <AssemblyName>IntegrationTests</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
@@ -55,12 +55,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Crossover\BasicCrossoverTests.cs" />
-    <Compile Include="Data\MissingValueStrategyTests.cs" />
-    <Compile Include="GenoType\GenoTypeFactoryTests.cs" />
-    <Compile Include="Mutation\BasicMutationTests.cs" />
-    <Compile Include="PhenoTypeTree\GeneToPhenoTypeTests.cs" />
-    <Compile Include="Terminals\FeatureTerminals.cs" />
+    <Compile Include="Data\DataSet.cs" />
+    <Compile Include="Data\FlatFileHelperTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -74,16 +70,7 @@
       <Project>{9fa0db24-090b-43d6-bbab-a0eff903aae2}</Project>
       <Name>Data</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EvolutionaryAlgorithm\EvolutionaryAlgorithm.csproj">
-      <Project>{686167de-9be0-43c8-ae9e-213cf0d8547f}</Project>
-      <Name>EvolutionaryAlgorithm</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GeneExpression\GeneExpression.csproj">
-      <Project>{54e36148-f688-496e-9dc2-12fc9bfbbc89}</Project>
-      <Name>GeneExpression</Name>
-    </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
