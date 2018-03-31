@@ -8,10 +8,10 @@ using Xunit;
 
 namespace UnitTests.Crossover
 {
-    public class CrossoverTests
+    public class BasicCrossoverTests
     {
         [Fact]
-        public void Test()
+        public void CanCrossover()
         {
             var listLeft = new List<IGenoTypeNode>
             {
@@ -53,7 +53,9 @@ namespace UnitTests.Crossover
                 new FeatureTerminal("d")
             };
 
-            var eaGeneExpressionParameters = new EaGeneExpressionParameters(4, possibleFunctions, possibleTerminals);
+            var eaGeneExpressionParameters =
+                new EaGeneExpressionParameters(4, possibleFunctions, possibleTerminals) {CrossoverProbability = 1.0};
+
             IGenoType left = new GeneExpression.GenoType {GenoTypeNodes = listLeft};
             IGenoType right = new GeneExpression.GenoType {GenoTypeNodes = listRight};
             var randomGenerator = new UniformRandomGenerator();
