@@ -41,14 +41,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Column.cs" />
-    <Compile Include="INominalValueMissingStrategy.cs" />
+    <Compile Include="DataSet.cs" />
+    <Compile Include="IFlatFile.cs" />
     <Compile Include="MeanContinousValueMissingStrategy.cs" />
     <Compile Include="DataType.cs" />
-    <Compile Include="FlatFileHelper.cs" />
+    <Compile Include="CsvFlatFile.cs" />
     <Compile Include="IColumn.cs" />
-    <Compile Include="IContinousValueMissingStrategy.cs" />
+    <Compile Include="IMissingValueReplacementStrategy.cs" />
     <Compile Include="IDataSet.cs" />
-    <Compile Include="NominalValueMissingStrategy.cs" />
+    <Compile Include="MajorityNominalValueMissingStrategy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -56,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Crossover\BasicCrossoverTests.cs" />
+    <Compile Include="Data\DataSetTests.cs" />
     <Compile Include="Data\MissingValueStrategyTests.cs" />
     <Compile Include="GenoType\GenoTypeFactoryTests.cs" />
     <Compile Include="Mutation\BasicMutationTests.cs" />

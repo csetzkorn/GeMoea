@@ -2,11 +2,19 @@
 
 namespace Data
 {
-    public class FlatFileHelper : IFlatFileHelper
+    public class CsvFlatFile : IFlatFile
     {
-        public string[,] Import(string file, char csvDelimiter, bool ignoreHeadline, bool removeQuoteSign)
+        public string[,] Data { get; set; }
+
+        public CsvFlatFile(string folderFilename)
         {
-            var list = ReadCsvFile(file, csvDelimiter, ignoreHeadline, removeQuoteSign);
+            Data = Import(folderFilename, ',', true, false);
+        }
+
+        // TODO factor out into helper class
+        private static string[,] Import(string file, char delimiter, bool ignoreHeadline, bool removeQuoteSign)
+        {
+            var list = ReadCsvFile(file, delimiter, ignoreHeadline, removeQuoteSign);
 
             var arrayToReturn = new string[list.Count, list[0].Length];
             for(var row = 0; row < list.Count; row++)
@@ -20,6 +28,7 @@ namespace Data
             return arrayToReturn;
         }
 
+        // TODO factor out into helper class
         private static List<string[]> ReadCsvFile(string filename, char csvDelimiter, bool ignoreHeadline, bool removeQuoteSign)
         {
             var lst = new List<string[]>();
@@ -60,10 +69,5 @@ namespace Data
             }
             return ar;
         }
-    }
-
-    public interface IFlatFileHelper
-    {
-        string[,] Import(string file, char csvDelimiter, bool ignoreHeadline, bool removeQuoteSign);
     }
 }

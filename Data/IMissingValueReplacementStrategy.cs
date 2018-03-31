@@ -1,6 +1,6 @@
 ﻿namespace Data
 {
-    public interface INominalValueMissingStrategy
+    public interface IMissingValueReplacementStrategy
     {
         string[] GetColumn(string[] columnData, string missingValueIndicator);
     }

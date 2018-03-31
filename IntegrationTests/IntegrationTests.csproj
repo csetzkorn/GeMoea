@@ -55,8 +55,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\DataSet.cs" />
-    <Compile Include="Data\FlatFileHelperTests.cs" />
+    <Compile Include="Data\DataSetTests.cs" />
+    <Compile Include="Data\FlatFileTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

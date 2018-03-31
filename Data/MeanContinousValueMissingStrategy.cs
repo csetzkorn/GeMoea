@@ -1,12 +1,12 @@
 ﻿namespace Data
 {
-    public class MeanContinousValueMissingStrategy : IContinousValueMissingStrategy
+    public class MeanContinousValueMissingStrategy : IMissingValueReplacementStrategy
     {
-        public double[] GetColumn(string[] columnData, string missingValueIndicator)
+        public string[] GetColumn(string[] columnData, string missingValueIndicator)
         {
             var sum = 0.0;
             var counter = 0;
-            var returnArray = new double[columnData.Length];
+            var returnArray = new string[columnData.Length];
 
             foreach (var row in columnData)
             {
@@ -16,18 +16,18 @@
             }
 
             var mean = sum / counter;
-            counter = 0;
-            foreach (var row in columnData)
+
+            for (var c = 0; c < columnData.Length; c++)
             {
-                if (row.Equals(missingValueIndicator))
+                if (columnData[c].Equals(missingValueIndicator))
                 {
-                    returnArray[counter] = mean;
+                    // ReSharper disable once SpecifyACultureInStringConversionExplicitly
+                    returnArray[c] = mean.ToString();
                 }
                 else
                 {
-                    returnArray[counter] = double.Parse(row);
+                    returnArray[c] = columnData[c];
                 }
-                counter++;
             }
 
             return returnArray;
