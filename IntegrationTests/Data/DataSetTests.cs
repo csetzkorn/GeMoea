@@ -24,12 +24,8 @@ namespace IntegrationTests.Data
 
             var dataSet = new DataSet(columns, flatFileHelper.Data);
 
-            //MSSubClass Nominal
-            //MSZoning Nominal
-            //LotFrontage Cont
-            //FireplaceQu Nominal
-            //SalePrice Continous
-
+            Assert.Equal(2919, dataSet.MappedData.GetLength(0));
+            Assert.Equal(28, dataSet.MappedData.GetLength(1));
         }
 
         [Fact]
@@ -128,6 +124,8 @@ namespace IntegrationTests.Data
 
             var dataSet = new DataSet(columns, flatFileHelper.Data);
 
+            Assert.Equal(2919, dataSet.MappedData.GetLength(0));
+            Assert.Equal(304, dataSet.MappedData.GetLength(1));
         }
     }
 }

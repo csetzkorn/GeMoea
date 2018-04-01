@@ -40,14 +40,16 @@ namespace Data
 
                     foreach (var uniqueValue in uniqueValues)
                     {
-                        MappedColumns.Add($"{originalColumn.NewColumnName}_{uniqueValue.Replace(" ", "-")}");
+                        MappedColumns.Add($"[{originalColumn.NewColumnName}_{uniqueValue.Replace(" ", "-")}]");
+                        //MappedColumns.Add($"{originalColumn.NewColumnName}_{uniqueValue.Replace(" ", "-")}");
                     }
                 }
                 else
                 {
                     newDataColumnPosition++;
 
-                    MappedColumns.Add(originalColumn.NewColumnName);
+                    MappedColumns.Add($"[{originalColumn.NewColumnName}]");
+                    //MappedColumns.Add($"{originalColumn.NewColumnName}");
                     listOfUniqueData.Add(null);
                 }
 

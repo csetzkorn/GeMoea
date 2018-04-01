@@ -17,8 +17,8 @@ namespace GeneExpression.Mutation
 
         public void PerformMutation(ref IGenoType genoType)
         {
-            if (!(UniformRandomGenerator.GetContinousRandomNumber(0, 1.0) <=
-                  EaGeneExpressionParameters.MutationProbability)) return;
+            if (!(UniformRandomGenerator.GetContinousRandomNumber(0, 1.0) <= EaGeneExpressionParameters.MutationProbability)) return;
+
             var index = UniformRandomGenerator.GetIntegerRandomNumber(0, genoType.GenoTypeNodes.Count - 1);
 
             if (index < EaGeneExpressionParameters.MaximumNumberOfHeadNodes)
