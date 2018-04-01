@@ -55,6 +55,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\ContinousTargetTests.cs" />
     <Compile Include="Data\DataSetTests.cs" />
     <Compile Include="Data\FlatFileTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -40,6 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArrayHelperMethods.cs" />
+    <Compile Include="ContinousTarget.cs" />
+    <Compile Include="Target.cs" />
     <Compile Include="Column.cs" />
     <Compile Include="DataSet.cs" />
     <Compile Include="IFlatFile.cs" />

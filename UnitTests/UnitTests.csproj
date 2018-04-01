@@ -55,6 +55,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArrayHelperMethods\ArrayHelperMethodsTests.cs" />
     <Compile Include="Crossover\BasicCrossoverTests.cs" />
     <Compile Include="Data\DataSetTests.cs" />
     <Compile Include="Data\MissingValueStrategyTests.cs" />

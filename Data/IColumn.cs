@@ -7,6 +7,5 @@
         DataType DataType { get; set; }
         string MissingValueIndicatorString { get; set; }
         IMissingValueReplacementStrategy MissingValueReplacementStrategy { get; set; }
-        bool Target { get; set; }
     }
 }

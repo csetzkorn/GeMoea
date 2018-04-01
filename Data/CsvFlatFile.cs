@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 
 namespace Data
 {
@@ -36,7 +37,7 @@ namespace Data
             var currentLineNumner = 0;
 
             // Read the file and display it line by line.  
-            using (var file = new System.IO.StreamReader(filename))
+            using (var file = new StreamReader(filename))
             {
                 string line;
                 while ((line = file.ReadLine()) != null)

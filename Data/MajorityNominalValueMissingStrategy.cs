@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Data
 {
@@ -7,7 +6,7 @@ namespace Data
     {
         public string[] GetColumn(string[] columnData, string missingValueIndicator)
         {
-            var frequencyDictionary = GetFrequencyOfvalues(columnData, missingValueIndicator);
+            var frequencyDictionary = columnData.GetFrequencyOfValues(missingValueIndicator);
             var returnArray = new string[columnData.Length];
 
             var majorityValue = frequencyDictionary.FirstOrDefault(x => x.Value.Equals(frequencyDictionary.Values.Max())).Key;
@@ -25,25 +24,6 @@ namespace Data
             }
 
             return returnArray;
-        }
-
-        public Dictionary<string, int> GetFrequencyOfvalues(string[] stringArray, string missingValueIndicator)
-        {
-            var returnDictionary = new Dictionary<string,int>();
-
-            foreach (var item in stringArray)
-            {
-                if (item.Equals(missingValueIndicator)) continue;
-                if (!returnDictionary.ContainsKey(item))
-                {
-                    returnDictionary.Add(item, 1);
-                }
-                else
-                {
-                    returnDictionary[item]++;
-                }
-            }
-            return returnDictionary;
         }
     }
 }

@@ -19,7 +19,6 @@
             DataType = dataType;
             MissingValueIndicatorString = missingValueIndicatorString;
             MissingValueReplacementStrategy = missingValueReplacementStrategy;
-            Target = target;
         }
     }
 }

@@ -5,7 +5,6 @@
         Boolean,
         Nominal,
         Ordinal,
-        Integer,
         Continous
     }
 }
