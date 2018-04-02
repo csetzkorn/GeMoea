@@ -35,11 +35,11 @@ namespace GeneExpression
             ,double constantProbability = 0.5
             ,double parametertProbability = 0.5
 
-            ,double parameterMinimum = -10
-            ,double parameterMaximum = 10
+            ,double parameterMinimum = -100
+            ,double parameterMaximum = 100
             ,bool parameterType = false
 
-            ,double crossoverProbability = 0.6
+            ,double crossoverProbability = 0.7
             ,double mutationProbability = 0.01
 
             ,int populationSize = 100

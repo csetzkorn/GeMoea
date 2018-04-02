@@ -44,22 +44,21 @@ namespace EvolutionaryAlgorithm.NSGA2
 
                 for (var i = 0; i < numberOfArrays; i++)
                 {
-
                     if (i == 0 || i == (numberOfArrays - 1))
                     {
                         objectiveValuesList[i].CrowdingDistance = objectiveValuesList[i].CrowdingDistance + double.MaxValue;
-
-                        if (double.IsNaN(objectiveValuesList[i].CrowdingDistance) ||
-                            double.IsInfinity(objectiveValuesList[i].CrowdingDistance))
-                        {
-                            objectiveValuesList[i].CrowdingDistance = double.MaxValue;
-                        }
                     }
                     else
                     {
-                        objectiveValuesList[i].CrowdingDistance =
-                        (objectiveValuesList[i + 1].Values[dimension] +
-                         objectiveValuesList[i - 1].Values[dimension]) / (maxs[dimension] - mins[dimension]);
+                        objectiveValuesList[i].CrowdingDistance = objectiveValuesList[i].CrowdingDistance +
+                        ((objectiveValuesList[i + 1].Values[dimension] +
+                         objectiveValuesList[i - 1].Values[dimension]) / (maxs[dimension] - mins[dimension]));
+                    }
+
+                    if (double.IsNaN(objectiveValuesList[i].CrowdingDistance) ||
+                        double.IsInfinity(objectiveValuesList[i].CrowdingDistance))
+                    {
+                        objectiveValuesList[i].CrowdingDistance = double.MaxValue;
                     }
                 }
             }

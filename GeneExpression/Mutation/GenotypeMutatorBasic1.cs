@@ -20,13 +20,15 @@ namespace GeneExpression.Mutation
         {
             if (!(UniformRandomGenerator.GetContinousRandomNumber(0, 1.0) <= EaGeneExpressionParameters.MutationProbability)) return;
 
+            var before = genoType.ToString();
+
             var index = UniformRandomGenerator.GetIntegerRandomNumber(0, genoType.GenoTypeNodes.Count - 1);
 
             if (genoType.GenoTypeNodes[index].GetType() == typeof(ParameterTerminal))
             {
                 // TODO improve
                 ((ParameterTerminal) genoType.GenoTypeNodes[index]).Value = ((ParameterTerminal)genoType.GenoTypeNodes[index]).Value +
-                    UniformRandomGenerator.GetContinousRandomNumber(-1, 1);
+                    UniformRandomGenerator.GetContinousRandomNumber(-10, 10);
             }
             else
             {
