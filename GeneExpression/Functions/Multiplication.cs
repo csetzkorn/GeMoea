@@ -6,5 +6,16 @@
         {
 
         }
+
+        public override object Clone()
+        {
+            var returnObject = new Multiplication
+            {
+                FunctionName = FunctionName,
+                Middle = Middle
+            };
+
+            return returnObject;
+        }
     }
 }

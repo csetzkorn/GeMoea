@@ -11,8 +11,17 @@
 
         public override string ToString()
         {
-            //return $"[{FeatureName}]";
             return FeatureName;
+        }
+
+        public override object Clone()
+        {
+            var returnObject = new FeatureTerminal(FeatureName)
+            {
+                Middle = Middle
+            };
+
+            return returnObject;
         }
     }
 }

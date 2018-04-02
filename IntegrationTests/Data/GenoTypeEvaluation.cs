@@ -25,10 +25,10 @@ namespace IntegrationTests.Data
 
             var columns = new List<IColumn>
             {
-                new Column("MSSubClass", null, DataType.Nominal, "NA", nominalMajorityStrategy, false)
-                ,new Column("MSZoning", null, DataType.Nominal, "NA", nominalMajorityStrategy, false)
-                ,new Column("LotFrontage", null, DataType.Continous, "NA", continousMeanStrategy, false)
-                ,new Column("FireplaceQu", null, DataType.Nominal, "xxx", nominalMajorityStrategy, false)
+                new Column("MSSubClass", null, DataType.Nominal, "NA", nominalMajorityStrategy)
+                ,new Column("MSZoning", null, DataType.Nominal, "NA", nominalMajorityStrategy)
+                ,new Column("LotFrontage", null, DataType.Continous, "NA", continousMeanStrategy)
+                ,new Column("FireplaceQu", null, DataType.Nominal, "xxx", nominalMajorityStrategy)
             };
 
             var flatFileHelper = new CsvFlatFile(@"D:\Data\Kaggle\HousePrices\SmallCombined.csv");
@@ -42,7 +42,6 @@ namespace IntegrationTests.Data
 
             var possibleFunctions = new List<IGenoTypeNode>
             {
-//                new SquareRoot(),
                 new Multiplication(),
                 new Plus(),
                 new Minus()
@@ -51,7 +50,7 @@ namespace IntegrationTests.Data
             var possibleTerminals = new List<IGenoTypeNode>();
             foreach (var mappedColumn in dataSet.MappedColumns)
             {
-                possibleTerminals.Add(new FeatureTerminal(mappedColumn));
+                possibleTerminals.Add(new FeatureTerminal(mappedColumn.Key));
             }
 
             var eaGeneExpressionParameters = new EaGeneExpressionParameters(10, possibleFunctions, possibleTerminals);
@@ -64,17 +63,27 @@ namespace IntegrationTests.Data
 
             var stringExpresssion = phenoTypeTree.ToString();
 
+            // TODO make mapped columns more sophisticated
+            var mappedColumnsUsedInExpression = new Dictionary<string, int>();
+
+            foreach (var mappedColumn in dataSet.MappedColumns)
+            {
+                if (stringExpresssion.Contains(mappedColumn.Key))
+                {
+                    mappedColumnsUsedInExpression.Add(mappedColumn.Key,mappedColumn.Value);
+                }
+            }
+
             var expression = new Expression(stringExpresssion);
 
             var numberOfRows = dataSet.MappedData.GetLength(0);
-            var numberOfColumns = dataSet.MappedData.GetLength(1);
 
             var sum = 0.0;
             for (var row = 0; row < numberOfRows; row++)
             {
-                for (var column = 0; column < numberOfColumns; column++)
+                foreach (var usedMappedColumn in mappedColumnsUsedInExpression)
                 {
-                    expression.Parameters[dataSet.MappedColumns[column].Replace("[","").Replace("]","")] = dataSet.MappedData[row, column];
+                    expression.Parameters[usedMappedColumn.Key.Replace("]","").Replace("[", "")] = dataSet.MappedData[row, usedMappedColumn.Value];
                 }
 
                 if (!expression.HasErrors())

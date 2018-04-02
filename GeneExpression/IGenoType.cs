@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GeneExpression
 {
-    public interface IGenoType
+    public interface IGenoType : ICloneable
     {
         List<IGenoTypeNode> GenoTypeNodes { get; set; }
     }

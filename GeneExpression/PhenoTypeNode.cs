@@ -11,18 +11,18 @@
         {
             if (Left == null && Right == null)
             {
-                return Expression.Trim();
+                return Expression;
             }
             if (Left != null && Right == null)
             {
-                return Expression.Trim() + "(" + Left.ToString().Trim() + ")";
+                return Expression + "(" + Left.ToString() + ")";
             }
             
             if (Middle)
             {
-                return "(" + Left.ToString().Trim() + Expression.Trim() + Right.ToString().Trim() + ")";
+                return "(" + Left.ToString() + Expression + Right.ToString() + ")";
             }
-            return Expression.Trim() + "(" + Left.ToString().Trim() + "," + Right.ToString().Trim() + ")";
+            return Expression + "(" + Left.ToString() + "," + Right.ToString() + ")";
         }
     }
 }

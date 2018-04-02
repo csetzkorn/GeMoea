@@ -15,6 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{DEFAE708-2441-4B75-9C93-4C3271EF672B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SinglePredictorRegression", "SinglePredictorRegression\SinglePredictorRegression.csproj", "{DF41908D-C8A3-421C-9726-A9391AD764B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SinglePredictorRegressionApp", "SinglePredictorRegressionApp\SinglePredictorRegressionApp.csproj", "{ACA447DF-9EF5-4CF6-80DF-89D5E61561A8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +49,14 @@ Global
 		{DEFAE708-2441-4B75-9C93-4C3271EF672B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DEFAE708-2441-4B75-9C93-4C3271EF672B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DEFAE708-2441-4B75-9C93-4C3271EF672B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF41908D-C8A3-421C-9726-A9391AD764B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF41908D-C8A3-421C-9726-A9391AD764B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF41908D-C8A3-421C-9726-A9391AD764B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF41908D-C8A3-421C-9726-A9391AD764B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACA447DF-9EF5-4CF6-80DF-89D5E61561A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACA447DF-9EF5-4CF6-80DF-89D5E61561A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACA447DF-9EF5-4CF6-80DF-89D5E61561A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACA447DF-9EF5-4CF6-80DF-89D5E61561A8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -24,5 +24,8 @@ namespace GeneExpression
 
         double CrossoverProbability { get; set; }
         double MutationProbability { get; set; }
+        int PopulationSize { get; set; }
+        int NumberOfGeneration { get; set; }
+        int TournamentSize { get; set; }
     }
 }

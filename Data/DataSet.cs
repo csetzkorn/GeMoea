@@ -7,7 +7,7 @@ namespace Data
         public string[,] OriginalData { get; set; }
         public double[,] MappedData { get; set; }
         public IList<IColumn> OriginalColumns { get; set; }
-        public IList<string> MappedColumns { get; set; }
+        public Dictionary<string, int> MappedColumns { get; set; }
 
         public DataSet(IList<IColumn> originalColumns, string[,] originalData)
         {
@@ -17,11 +17,16 @@ namespace Data
             SeedMappedData();
         }
 
+        private string GetNewMappedName(string name)
+        {
+            return name.Replace("[", "").Replace("]", "").Replace("(", "").Replace(")", "");
+        }
+
         private void SeedMappedData()
         {
             var originalDataColumnPosition = 0;
             var newDataColumnPosition = 0;
-            MappedColumns = new List<string>();
+            MappedColumns = new Dictionary<string,int>();
             var listOfNewColumnData = new List<string[]>();
             var listOfUniqueData = new List<List<string>>();
             var numberOfRows = OriginalData.GetLength(0);
@@ -36,20 +41,20 @@ namespace Data
                 {
                     var uniqueValues = originalColumnData.GetUniqueValues(originalColumn.MissingValueIndicatorString);
                     listOfUniqueData.Add(uniqueValues);
-                    newDataColumnPosition = newDataColumnPosition + uniqueValues.Count;
 
                     foreach (var uniqueValue in uniqueValues)
                     {
-                        MappedColumns.Add($"[{originalColumn.NewColumnName}_{uniqueValue.Replace(" ", "-")}]");
-                        //MappedColumns.Add($"{originalColumn.NewColumnName}_{uniqueValue.Replace(" ", "-")}");
+                        MappedColumns.Add($"[ {GetNewMappedName(originalColumn.NewColumnName)}_{uniqueValue.Replace("]", "").Replace("(", "").Replace(")", "").Replace(" ", "-")}] ", newDataColumnPosition);
+                        
+                        newDataColumnPosition++;
                     }
                 }
                 else
                 {
+                    MappedColumns.Add($"[{GetNewMappedName(originalColumn.NewColumnName)}]", newDataColumnPosition);
+                    
                     newDataColumnPosition++;
 
-                    MappedColumns.Add($"[{originalColumn.NewColumnName}]");
-                    //MappedColumns.Add($"{originalColumn.NewColumnName}");
                     listOfUniqueData.Add(null);
                 }
 

@@ -1,4 +1,5 @@
 ﻿using EvolutionaryAlgorithm.Helpers;
+using GeneExpression.Terminals;
 
 namespace GeneExpression.Mutation
 {
@@ -21,14 +22,22 @@ namespace GeneExpression.Mutation
 
             var index = UniformRandomGenerator.GetIntegerRandomNumber(0, genoType.GenoTypeNodes.Count - 1);
 
-            if (index < EaGeneExpressionParameters.MaximumNumberOfHeadNodes)
+            if (genoType.GenoTypeNodes[index].GetType() == typeof(ParameterTerminal))
             {
-                // create new function
-                genoType.GenoTypeNodes[index] = GenoTypeFactory.GetFunctionOrTerminalNode();
+                // TODO improve
+                ((ParameterTerminal) genoType.GenoTypeNodes[index]).Value = ((ParameterTerminal)genoType.GenoTypeNodes[index]).Value +
+                    UniformRandomGenerator.GetContinousRandomNumber(-10, 10);
             }
             else
             {
-                genoType.GenoTypeNodes[index] = GenoTypeFactory.GetTerminalNode();
+                if (index < EaGeneExpressionParameters.MaximumNumberOfHeadNodes)
+                {
+                    genoType.GenoTypeNodes[index] = GenoTypeFactory.GetFunctionOrTerminalNode();
+                }
+                else
+                {
+                    genoType.GenoTypeNodes[index] = GenoTypeFactory.GetTerminalNode();
+                }
             }
         }
     }

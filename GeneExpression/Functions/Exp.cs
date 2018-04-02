@@ -6,5 +6,16 @@
         {
 
         }
+
+        public override object Clone()
+        {
+            var returnObject = new Exp
+            {
+                FunctionName = FunctionName,
+                Middle = Middle
+            };
+
+            return returnObject;
+        }
     }
 }

@@ -14,5 +14,15 @@
             // ReSharper disable once SpecifyACultureInStringConversionExplicitly
             return Value.ToString();
         }
+
+        public override object Clone()
+        {
+            var returnObject = new ParameterTerminal(Value)
+            {
+                Middle = Middle
+            };
+
+            return returnObject;
+        }
     }
 }

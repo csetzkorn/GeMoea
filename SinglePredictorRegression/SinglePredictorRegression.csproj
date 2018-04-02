@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{686167DE-9BE0-43C8-AE9E-213CF0D8547F}</ProjectGuid>
+    <ProjectGuid>{DF41908D-C8A3-421C-9726-A9391AD764B7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>EvolutionaryAlgorithm</RootNamespace>
-    <AssemblyName>EvolutionaryAlgorithm</AssemblyName>
+    <RootNamespace>SinglePredictorRegression</RootNamespace>
+    <AssemblyName>SinglePredictorRegression</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,9 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -43,18 +40,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helpers\UniformRandomGenerator.cs" />
-    <Compile Include="Helpers\IUniformRandomGenerator.cs" />
-    <Compile Include="IIndividual.cs" />
-    <Compile Include="IObjectiveValues.cs" />
-    <Compile Include="NSGA2\Nsga2Crowder.cs" />
-    <Compile Include="NSGA2\Nsga2Ranker.cs" />
-    <Compile Include="NSGA2\Nsga2TournamentSelector.cs" />
-    <Compile Include="ObjectiveValues.cs" />
+    <Compile Include="Individual.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\Data\Data.csproj">
+      <Project>{9fa0db24-090b-43d6-bbab-a0eff903aae2}</Project>
+      <Name>Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EvolutionaryAlgorithm\EvolutionaryAlgorithm.csproj">
+      <Project>{686167de-9be0-43c8-ae9e-213cf0d8547f}</Project>
+      <Name>EvolutionaryAlgorithm</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GeneExpression\GeneExpression.csproj">
+      <Project>{54e36148-f688-496e-9dc2-12fc9bfbbc89}</Project>
+      <Name>GeneExpression</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

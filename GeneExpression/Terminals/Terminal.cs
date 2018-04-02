@@ -8,5 +8,7 @@
         {
             return 0;
         }
+
+        public abstract object Clone();
     }
 }

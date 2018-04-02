@@ -8,7 +8,7 @@ namespace Data
         string[,] OriginalData { get; set; }
         double[,] MappedData { get; set; }
         IList<IColumn> OriginalColumns { get; set; }
-        IList<string> MappedColumns { get; set; }
+        Dictionary<string,int> MappedColumns { get; set; }
 
         //int GetNumberOfRows
     }

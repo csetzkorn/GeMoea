@@ -20,5 +20,7 @@
         {
             return FunctionName;
         }
+
+        public abstract object Clone();
     }
 }

@@ -7,5 +7,16 @@ namespace GeneExpression.Functions
         {
             
         }
+
+        public override object Clone()
+        {
+            var returnObject = new Plus
+            {
+                FunctionName = FunctionName,
+                Middle = Middle
+            };
+
+            return returnObject;
+        }
     }
 }

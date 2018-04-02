@@ -31,9 +31,9 @@ namespace UnitTests.Data
             var nominalStrategy = new MajorityNominalValueMissingStrategy();
             var columns = new List<IColumn>
             {
-                new Column("Column1", null, DataType.Continous, "NA", continousStrategy, false)
-                ,new Column("Column2", null, DataType.Nominal, "NA", nominalStrategy, false)
-                ,new Column("Column2", null, DataType.Boolean, "NA", nominalStrategy, false)
+                new Column("Column1", null, DataType.Continous, "NA", continousStrategy)
+                ,new Column("Column2", null, DataType.Nominal, "NA", nominalStrategy)
+                ,new Column("Column2", null, DataType.Boolean, "NA", nominalStrategy)
             };
 
             var dataSet = new DataSet(columns, testData);
@@ -42,6 +42,5 @@ namespace UnitTests.Data
 
             Assert.Equal(expected, actual);
         }
-
     }
 }

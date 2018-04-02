@@ -22,6 +22,9 @@ namespace GeneExpression
         public bool ParameterTypeInteger { get; set; }
         public double CrossoverProbability { get; set; }
         public double MutationProbability { get; set; }
+        public int PopulationSize { get; set; }
+        public int NumberOfGeneration { get; set; }
+        public int TournamentSize { get; set; }
 
         public EaGeneExpressionParameters(
             int maximumNumberOfHeadNodes
@@ -38,6 +41,10 @@ namespace GeneExpression
 
             ,double crossoverProbability = 0.7
             ,double mutationProbability = 0.01
+
+            ,int populationSize = 100
+            ,int numberOfGeneration = 100
+            ,int tournamentSize = 2
         )
         {
             MaximumNumberOfHeadNodes = maximumNumberOfHeadNodes;
@@ -73,6 +80,10 @@ namespace GeneExpression
                 new Constant() {Name = "SilverRatio", Value = 2.414213562373095048801688},
                 new Constant() {Name = "PlasticNumber", Value = 1.324717957244746025960908},                
             };
+
+            PopulationSize = populationSize;
+            NumberOfGeneration = numberOfGeneration;
+            TournamentSize = tournamentSize;
         }
     }
 }

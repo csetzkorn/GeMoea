@@ -8,7 +8,7 @@ namespace IntegrationTests.Data
         [Fact]
         public void Test()
         {
-            var expected = 1460;
+            const int expected = 1460;
             var continousTarget = new ContinousTarget(@"D:\Data\Kaggle\HousePrices\Target.txt");
             var actual = continousTarget.Values.Count;
 

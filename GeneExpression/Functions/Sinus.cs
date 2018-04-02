@@ -6,5 +6,17 @@
         {
 
         }
+
+        public override object Clone()
+        {
+            var returnObject = new Sinus
+            {
+                FunctionName = FunctionName,
+                Middle = Middle
+            };
+
+            return returnObject;
+        }
+
     }
 }
