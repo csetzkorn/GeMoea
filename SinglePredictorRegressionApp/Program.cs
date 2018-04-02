@@ -36,30 +36,37 @@ namespace SinglePredictorRegressionApp
 
                 var smallestMse = double.MaxValue;
                 var largestMse = 0.0;
-                var position = 0;
+                var smallestPosition = 0;
+                var rank1 = new List<string>();
                 for (var c = 0; c < eaGeneExpressionParameters.PopulationSize; c++)
                 {
                     var objectiveValues = GetObjectiveValues(target, dataSet, population[c]);
                     listOfObjectiveValues.Add(objectiveValues);
+                }
+             
+                listOfObjectiveValues = Nsga2TournamentSelector.PerformSelection(eaGeneExpressionParameters.TournamentSize, listOfObjectiveValues, randomGenerator);
 
-                    if (objectiveValues.Values[0] < smallestMse)
+                for (var c = 0; c < eaGeneExpressionParameters.PopulationSize; c++)
+                {
+                    if (listOfObjectiveValues[c].Rank == 1)
                     {
-                        smallestMse = objectiveValues.Values[0];
-                        position = c;
+                        rank1.Add(listOfObjectiveValues[c].IndividualGuid.ToString());
                     }
 
-                    if (objectiveValues.Values[0] > largestMse)
+                    if (listOfObjectiveValues[c].Values[0] < smallestMse)
                     {
-                        largestMse = objectiveValues.Values[0];
+                        smallestMse = listOfObjectiveValues[c].Values[0];
+                        smallestPosition = c;
+                    }
+
+                    if (listOfObjectiveValues[c].Values[0] > largestMse)
+                    {
+                        largestMse = listOfObjectiveValues[c].Values[0];
                     }
                 }
 
-                Console.WriteLine(generation + " " + smallestMse + " " + largestMse);
-                Console.WriteLine(new PhenoTypeTree(population[position].GenoType.GenoTypeNodes));
-
-                listOfObjectiveValues = Nsga2Ranker.Rank(listOfObjectiveValues);
-                listOfObjectiveValues = Nsga2Crowder.CalculateCrowdingDistances(listOfObjectiveValues);
-                listOfObjectiveValues = Nsga2TournamentSelector.PerformSelection(eaGeneExpressionParameters.TournamentSize, listOfObjectiveValues, randomGenerator);
+                Console.WriteLine(generation + " " + smallestMse + " " + largestMse + " " + rank1.Count);
+                Console.WriteLine(new PhenoTypeTree(population[smallestPosition].GenoType.GenoTypeNodes));
 
                 var tempPopulation = new List<Individual>();
                 foreach (var objectiveValues in listOfObjectiveValues)
@@ -136,7 +143,7 @@ namespace SinglePredictorRegressionApp
 
             var numberOfRows = dataSet.MappedData.GetLength(0);
             var mseSum = 0.0;
- 
+            var sMape = 0.0;
             for (var row = 0; row < numberOfRows; row++)
             {
                 foreach (var usedMappedColumn in mappedColumnsUsedInExpression)
@@ -146,25 +153,36 @@ namespace SinglePredictorRegressionApp
 
                 if (!expression.HasErrors())
                 {
-                    mseSum = mseSum + Math.Pow(((double)expression.Evaluate()) - target.Values[row], 2.0);
+                    var prediction = (double) expression.Evaluate();
+                    mseSum = mseSum + Math.Pow(prediction - target.Values[row], 2.0);
+
+                    sMape = sMape + (Math.Abs(prediction - target.Values[row])/ ((Math.Abs(prediction) + Math.Abs(target.Values[row]))));
                 }
                 else
                 {
                     mseSum = mseSum + double.MaxValue;
+                    sMape = sMape + double.MaxValue;
                 }
             }
 
             var mse = mseSum / numberOfRows;
-            
-            if (double.IsNaN(mse))
+            sMape = 100.0 * (sMape / numberOfRows);
+
+            if (double.IsNaN(mse) || double.IsInfinity(mse))
             {
                 mse = double.MaxValue;
             }
+
+            mse = Math.Log(mse + 1.0);
+            sMape = Math.Log(sMape + 1.0);
+
             var numberOfOpenBrackets = stringExpresssion.Count(c => c == '(');
 
             //Console.WriteLine(mse + " " + numberOfOpenBrackets);
-            string[] names = {"Mse", "OpenBrackets"};
-            double[] values = {mse, numberOfOpenBrackets};
+            string[] names = {"sMape", "OpenBrackets", "Mse"};
+            double[] values = {sMape, numberOfOpenBrackets, mse};
+//            string[] names = {"Mse", "OpenBrackets" };
+//            double[] values = { mse, numberOfOpenBrackets };
             var objectiveValues = new ObjectiveValues(values, names, individual.Guid);
             
             return objectiveValues;
@@ -211,7 +229,7 @@ namespace SinglePredictorRegressionApp
                 possibleTerminals.Add(new FeatureTerminal(mappedColumn.Key));
             }
 
-            return new EaGeneExpressionParameters(10, possibleFunctions, possibleTerminals, populationSize:500, mutationProbability:0.4, tournamentSize:3, numberOfGeneration:500);
+            return new EaGeneExpressionParameters(10, possibleFunctions, possibleTerminals, populationSize:500, mutationProbability:0.4, tournamentSize:10, numberOfGeneration:1000);
         }
 
         public static List<Individual> GetFirstPopulation(IEaGeneExpressionParameters eaGeneExpressionParameters, IParameterTerminalFactory parameterTerminalFactory, IGenoTypeFactory genoTypeFactory)

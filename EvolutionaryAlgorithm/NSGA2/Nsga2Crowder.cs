@@ -47,7 +47,13 @@ namespace EvolutionaryAlgorithm.NSGA2
 
                     if (i == 0 || i == (numberOfArrays - 1))
                     {
-                        objectiveValuesList[i].CrowdingDistance = objectiveValuesList[i].CrowdingDistance + float.MaxValue;
+                        objectiveValuesList[i].CrowdingDistance = objectiveValuesList[i].CrowdingDistance + double.MaxValue;
+
+                        if (double.IsNaN(objectiveValuesList[i].CrowdingDistance) ||
+                            double.IsInfinity(objectiveValuesList[i].CrowdingDistance))
+                        {
+                            objectiveValuesList[i].CrowdingDistance = double.MaxValue;
+                        }
                     }
                     else
                     {

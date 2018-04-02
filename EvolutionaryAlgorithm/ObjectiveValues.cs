@@ -53,7 +53,7 @@ namespace EvolutionaryAlgorithm
         {
             DominatedByCount = 0;
             Rank = 0;
-            CrowdingDistance = 0f;
+            CrowdingDistance = 0;
             DominatingObjectiveValues = new List<IObjectiveValues>();
         }
 

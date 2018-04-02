@@ -26,7 +26,7 @@ namespace GeneExpression.Mutation
             {
                 // TODO improve
                 ((ParameterTerminal) genoType.GenoTypeNodes[index]).Value = ((ParameterTerminal)genoType.GenoTypeNodes[index]).Value +
-                    UniformRandomGenerator.GetContinousRandomNumber(-10, 10);
+                    UniformRandomGenerator.GetContinousRandomNumber(-1, 1);
             }
             else
             {
