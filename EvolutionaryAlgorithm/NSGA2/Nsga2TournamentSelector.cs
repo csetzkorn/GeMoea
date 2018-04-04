@@ -28,8 +28,24 @@ namespace EvolutionaryAlgorithm.NSGA2
 
                 } while (indices.Count() < tournamentSize);
 
-                individuals = individuals.OrderBy(i => i.Rank).ThenByDescending(i => i.CrowdingDistance).ToList();
-                newPopulation.Add(individuals[0]);
+                individuals = individuals.OrderBy(i => i.Rank).ToList();
+                //.ThenByDescending(i => i.CrowdingDistance).
+                if (individuals[0].Rank == individuals[1].Rank)
+                {
+                    if (individuals[1].CrowdingDistance > individuals[0].CrowdingDistance)
+                    {
+                        newPopulation.Add(individuals[1]);
+                    }
+                    else
+                    {
+                        newPopulation.Add(individuals[0]);
+                    }
+                }
+                else
+                {
+                    newPopulation.Add(individuals[0]);
+                }
+                
             } while (newPopulation.Count < populationSize);
 
             return newPopulation;

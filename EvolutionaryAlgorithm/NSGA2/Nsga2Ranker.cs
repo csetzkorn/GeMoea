@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace EvolutionaryAlgorithm.NSGA2
 {
@@ -22,7 +23,7 @@ namespace EvolutionaryAlgorithm.NSGA2
 
                         var comparisonResults = ov1.CompareTo(ov2);
 
-                        if (comparisonResults > 1)
+                        if (comparisonResults == 1)
                         {
                             ov1.DominatingObjectiveValues.Add(ov2);
                             ov2.DominatedByCount++;
@@ -52,8 +53,10 @@ namespace EvolutionaryAlgorithm.NSGA2
                                 }
                             }
                         }
-                    }
+                    } 
                 }
+
+                //objectiveValuesList = objectiveValuesList.OrderByDescending(i => i.Rank).ToList();
 
                 foreach (var ovs in ovsToBeReduced)
                 {
@@ -63,6 +66,8 @@ namespace EvolutionaryAlgorithm.NSGA2
                 currentRank++;
                 if (rankZeroCounter == 0) break;
             }
+
+            //objectiveValuesList = objectiveValuesList.OrderBy(i => i.Rank).ToList();
 
             return objectiveValuesList;
         }

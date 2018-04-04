@@ -33,8 +33,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FluentAssertions, Version=5.2.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentAssertions.5.2.0\lib\net45\FluentAssertions.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -56,11 +62,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArrayHelperMethods\ArrayHelperMethodsTests.cs" />
+    <Compile Include="Cloning\CloningTests1.cs" />
     <Compile Include="Crossover\BasicCrossoverTests.cs" />
     <Compile Include="Data\DataSetTests.cs" />
     <Compile Include="Data\MissingValueStrategyTests.cs" />
     <Compile Include="GenoType\GenoTypeFactoryTests.cs" />
     <Compile Include="Mutation\BasicMutationTests.cs" />
+    <Compile Include="Nsga2Crowder\Nsga2CrowderTests.cs" />
     <Compile Include="PhenoTypeTree\GeneToPhenoTypeTests.cs" />
     <Compile Include="Terminals\FeatureTerminals.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

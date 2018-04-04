@@ -28,61 +28,85 @@ namespace SinglePredictorRegressionApp
             var mutator = new GenoTypeMutatorBasic1(randomGenerator, eaGeneExpressionParameters, genoTypeFactory);
             var crossOverator = new GenoTypeCrossoveratorBasic1(randomGenerator, eaGeneExpressionParameters);
 
-            var population = GetFirstPopulation(eaGeneExpressionParameters, parameterTerminalFactory, genoTypeFactory);
+            var populationP = GetFirstPopulation(eaGeneExpressionParameters, parameterTerminalFactory, genoTypeFactory);
 
             for (var generation = 0; generation < eaGeneExpressionParameters.NumberOfGeneration; generation++)
             {
-                var listOfObjectiveValues = new List<IObjectiveValues>();
-
-                var smallestMse = double.MaxValue;
-                var largestMse = 0.0;
-                var smallestPosition = 0;
-                var rank1 = new List<string>();
-                for (var c = 0; c < eaGeneExpressionParameters.PopulationSize; c++)
+                var populationQ = new List<Individual>();
+                foreach (var individual in populationP)
                 {
-                    var objectiveValues = GetObjectiveValues(target, dataSet, population[c]);
-                    listOfObjectiveValues.Add(objectiveValues);
-                }
-             
-                listOfObjectiveValues = Nsga2TournamentSelector.PerformSelection(eaGeneExpressionParameters.TournamentSize, listOfObjectiveValues, randomGenerator);
-
-                for (var c = 0; c < eaGeneExpressionParameters.PopulationSize; c++)
-                {
-                    if (listOfObjectiveValues[c].Rank == 1)
-                    {
-                        rank1.Add(listOfObjectiveValues[c].IndividualGuid.ToString());
-                    }
-
-                    if (listOfObjectiveValues[c].Values[0] < smallestMse)
-                    {
-                        smallestMse = listOfObjectiveValues[c].Values[0];
-                        smallestPosition = c;
-                    }
-
-                    if (listOfObjectiveValues[c].Values[0] > largestMse)
-                    {
-                        largestMse = listOfObjectiveValues[c].Values[0];
-                    }
+                    populationQ.Add((Individual)individual.Clone());
                 }
 
-                Console.WriteLine(generation + " " + smallestMse + " " + largestMse + " " + rank1.Count);
-                Console.WriteLine(new PhenoTypeTree(population[smallestPosition].GenoType.GenoTypeNodes));
+                populationQ = PerformCrossOver(populationQ, randomGenerator, crossOverator);
 
-                var tempPopulation = new List<Individual>();
-                foreach (var objectiveValues in listOfObjectiveValues)
-                {
-                    var indy = population.FirstOrDefault(x => x.Guid == objectiveValues.IndividualGuid);
-
-                    tempPopulation.Add((Individual) indy.Clone());
-                }
-                population = tempPopulation;
-
-                foreach (var individual in population)
+                foreach (var individual in populationQ)
                 {
                     mutator.PerformMutation(ref individual.GenoType);
                 }
 
-                population = PerformCrossOver(population, randomGenerator, crossOverator);
+                var listOfObjectiveValuesQ = new List<IObjectiveValues>();
+                for (var c = 0; c < populationP.Count; c++)
+                {
+                    var objectiveValues = GetObjectiveValues(target, dataSet, populationQ[c]);
+                    listOfObjectiveValuesQ.Add(objectiveValues);
+                }
+                listOfObjectiveValuesQ = Nsga2TournamentSelector.PerformSelection(eaGeneExpressionParameters.TournamentSize, listOfObjectiveValuesQ, randomGenerator);
+
+                var listOfObjectiveValuesP = new List<IObjectiveValues>();
+                for (var c = 0; c < populationP.Count; c++)
+                {
+                    var objectiveValues = GetObjectiveValues(target, dataSet, populationP[c]);
+                    listOfObjectiveValuesP.Add(objectiveValues);
+                }
+                listOfObjectiveValuesP = Nsga2Ranker.Rank(listOfObjectiveValuesP);
+                listOfObjectiveValuesP = Nsga2Crowder.CalculateCrowdingDistances(listOfObjectiveValuesP);
+
+                var combinedlistOfObjectiveValues = new List<IObjectiveValues>();
+                foreach (var objectiveValues in listOfObjectiveValuesP)
+                {
+                    combinedlistOfObjectiveValues.Add(objectiveValues);
+                }
+                foreach (var objectiveValues in listOfObjectiveValuesQ)
+                {
+                    combinedlistOfObjectiveValues.Add(objectiveValues);
+                }
+
+                combinedlistOfObjectiveValues = combinedlistOfObjectiveValues.OrderBy(i => i.Rank).ThenByDescending(i => i.CrowdingDistance).ToList();
+
+                var tempPopulation = new List<Individual>();
+                var counter = 0;
+                var smallestMse = decimal.MaxValue;
+                decimal largestMse = 0;
+                var smallestPosition = -1;
+                foreach (var objectiveValues in combinedlistOfObjectiveValues)
+                {
+                    var indy = populationP.FirstOrDefault(x => x.Guid == objectiveValues.IndividualGuid) ?? populationQ.FirstOrDefault(x => x.Guid == objectiveValues.IndividualGuid);
+
+                    tempPopulation.Add((Individual)indy.Clone());
+                    counter++;
+
+                    var ovs = GetObjectiveValues(target, dataSet, indy);
+                    if (ovs.Values[0] < smallestMse)
+                    {
+                        smallestMse = ovs.Values[0];
+                        smallestPosition = counter;
+                    }
+
+                    if (ovs.Values[0] > largestMse)
+                    {
+                        largestMse = ovs.Values[0];
+                    }
+
+                    if (counter == eaGeneExpressionParameters.PopulationSize)
+                    {
+                        break;
+                    }
+                }
+                populationP = tempPopulation;
+
+                Console.WriteLine(generation + " " + smallestMse + " " + largestMse);
+                Console.WriteLine(new PhenoTypeTree(populationP[smallestPosition].GenoType.GenoTypeNodes));
             }
         }
 
@@ -104,15 +128,12 @@ namespace SinglePredictorRegressionApp
                     population.RemoveAt(rightIndex);
                 }
 
-                
                 if (rightIndividual != null)
                 {
                     crossOverator.PerformCrossover(ref leftIndividual.GenoType, ref rightIndividual.GenoType);
-                    returnObject.Add(rightIndividual);
+                    returnObject.Add((Individual) rightIndividual.Clone());
                 }
-                returnObject.Add(leftIndividual);
-
-
+                returnObject.Add((Individual) leftIndividual.Clone());
             } while (population.Count >= 1);
 
             if (population.Count == 1)
@@ -141,9 +162,10 @@ namespace SinglePredictorRegressionApp
 
             var expression = new Expression(stringExpresssion);
 
-            var numberOfRows = dataSet.MappedData.GetLength(0);
-            var mseSum = 0.0;
-            var sMape = 0.0;
+            var numberOfRows = (decimal) dataSet.MappedData.GetLength(0);
+            var mae = 0m;
+            var rmse = 0m;
+            var maxError = 0m;
             for (var row = 0; row < numberOfRows; row++)
             {
                 foreach (var usedMappedColumn in mappedColumnsUsedInExpression)
@@ -154,40 +176,89 @@ namespace SinglePredictorRegressionApp
                 if (!expression.HasErrors())
                 {
                     var prediction = (double) expression.Evaluate();
-                    //mseSum = mseSum + Math.Pow(Math.Log(1.0 + prediction) - Math.Log(1.0 + target.Values[row]), 2.0);
-                    mseSum = mseSum + Math.Pow(prediction -  target.Values[row], 2.0);
 
-                    //sMape = sMape + (Math.Abs(prediction - target.Values[row])/ ((Math.Abs(prediction) + Math.Abs(target.Values[row]))));
+                    if (double.IsNaN(prediction) || double.IsInfinity(prediction))
+                    {
+                        mae = decimal.MaxValue;
+                        rmse = decimal.MaxValue;
+                        maxError = decimal.MaxValue;
+                        break;
+                    }
+
+                    var error = prediction - target.Values[row];
+                    var absError = Math.Abs(error);
+
+                    if (absError > (double) maxError)
+                    {
+                        if (absError <= (double) decimal.MaxValue)
+                        {
+                            maxError = (decimal)absError; 
+                        }
+                        else
+                        {
+                            maxError = decimal.MaxValue;
+                        }
+                    }
+                    
+                    try
+                    {
+                        mae = mae + (decimal) Math.Abs(error);
+                        rmse = rmse + (decimal)Math.Pow(error, 2);
+                    }
+                    catch (Exception e)
+                    {
+                        mae = decimal.MaxValue;
+                        rmse = decimal.MaxValue;
+                        maxError = decimal.MaxValue;
+                        break;
+                    }
                 }
                 else
                 {
-                    mseSum = mseSum + double.MaxValue;
-                    //sMape = sMape + double.MaxValue;
+                    mae = decimal.MaxValue;
+                    rmse = decimal.MaxValue;
+                    maxError = decimal.MaxValue;
+                    break;
                 }
             }
 
-            var mse = mseSum / numberOfRows;
-            //sMape = 100.0 * (sMape / numberOfRows);
-
-            if (double.IsNaN(mse) || double.IsInfinity(mse))
+            if (mae != decimal.MaxValue)
             {
-                mse = double.MaxValue;
+                mae = mae / numberOfRows;
             }
 
-            mse = Math.Log(mse + 1.0);
-            //            sMape = Math.Log(sMape + 1.0);
+            if (rmse != decimal.MaxValue)
+            {
+                rmse = Sqrt( rmse / numberOfRows);
+            }
 
-            var numberOfOpenBrackets = stringExpresssion.Count(c => c == '(');
-            //var numberOfOpenBrackets = 3;
+            var numberOfNodes = PhenoTypeTree.GetNumberOfNodes(individual.GenoType.GenoTypeNodes);
+            var numberOfCharacters = stringExpresssion.Length;
+            //var distinctNumberOfFeatures = mappedColumnsUsedInExpression.Count;
 
             //Console.WriteLine(mse + " " + numberOfOpenBrackets);
-//            string[] names = { "sMape", "OpenBrackets", "Mse" };
-//            double[] values = { sMape, numberOfOpenBrackets, mse };
-            string[] names = { "Mse", "OpenBrackets" };
-            double[] values = { mse, numberOfOpenBrackets };
+            //            string[] names = { "sMape", "OpenBrackets", "Mse" };
+            //            double[] values = { sMape, numberOfOpenBrackets, mse };
+            string[] names = { "mae", "numberOfNodes", "numberOfCharacters" };
+            decimal[] values = { mae, numberOfNodes, numberOfCharacters };
             var objectiveValues = new ObjectiveValues(values, names, individual.Guid);
             
             return objectiveValues;
+        }
+
+        public static decimal Sqrt(decimal x, decimal epsilon = 0.0M)
+        {
+            if (x < 0) throw new OverflowException("Cannot calculate square root from a negative number");
+
+            decimal current = (decimal)Math.Sqrt((double)x), previous;
+            do
+            {
+                previous = current;
+                if (previous == 0.0M) return 0;
+                current = (previous + x / previous) / 2;
+            }
+            while (Math.Abs(previous - current) > epsilon);
+            return current;
         }
 
         public static IDataSet GetDataSet()
@@ -199,14 +270,14 @@ namespace SinglePredictorRegressionApp
                 new Column("X", null, DataType.Continous, "NA", continousMeanStrategy)
             };
 
-            var flatFileHelper = new CsvFlatFile(@"D:\Data\sinus\SimpleSinus.csv");
+            var flatFileHelper = new CsvFlatFile(@"D:\Data\Sinus\SimpleSinus.csv");
 
             return new DataSet(columns, flatFileHelper.Data);
         }
 
         public static Target<double> GetTarget()
         {
-            return new ContinousTarget(@"D:\Data\sinus\SimpleSinusTarget.txt");
+            return new ContinousTarget(@"D:\Data\Sinus\SimpleSinusTarget.txt");
         }
 
         public static IEaGeneExpressionParameters GetEaGeneExpressionParameters(IDataSet dataSet)
@@ -229,7 +300,7 @@ namespace SinglePredictorRegressionApp
                 possibleTerminals.Add(new FeatureTerminal(mappedColumn.Key));
             }
 
-            return new EaGeneExpressionParameters(10, possibleFunctions, possibleTerminals, populationSize:1000, mutationProbability:0.3, tournamentSize:5, numberOfGeneration:500);
+            return new EaGeneExpressionParameters(20, possibleFunctions, possibleTerminals, populationSize:1000, mutationProbability:0.5, tournamentSize:3, numberOfGeneration:500);
         }
 
         public static List<Individual> GetFirstPopulation(IEaGeneExpressionParameters eaGeneExpressionParameters, IParameterTerminalFactory parameterTerminalFactory, IGenoTypeFactory genoTypeFactory)

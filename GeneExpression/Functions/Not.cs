@@ -11,7 +11,7 @@
         {
             var returnObject = new Not
             {
-                FunctionName = FunctionName,
+                FunctionName = string.Copy(FunctionName),
                 Middle = Middle
             };
 

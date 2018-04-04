@@ -5,15 +5,15 @@ namespace EvolutionaryAlgorithm
 {
     public interface IObjectiveValues : IComparable
     {
-        double[] Values { get; set; }
+        decimal[] Values { get; set; }
         string[] Names { get; set; }
         int DominatedByCount { get; set; }
         int Rank { get; set; }
-        double CrowdingDistance { get; set; }
+        decimal CrowdingDistance { get; set; }
         IList<IObjectiveValues> DominatingObjectiveValues { get; set; }
         Guid IndividualGuid { get; set; }
 
-        List<KeyValuePair<string, double>> GetObjectiveValues();
+        List<KeyValuePair<string, decimal>> GetObjectiveValues();
         void Reset();
     }
 }

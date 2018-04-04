@@ -1,4 +1,6 @@
-﻿namespace GeneExpression
+﻿using System.Collections.Generic;
+
+namespace GeneExpression
 {
     public interface IPhenoTypeTree
     {

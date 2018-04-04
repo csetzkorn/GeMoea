@@ -9,9 +9,9 @@
 
         public override object Clone()
         {
-            var returnObject = new Multiplication
+            var returnObject = new Multiplication()
             {
-                FunctionName = FunctionName,
+                FunctionName = string.Copy(FunctionName),
                 Middle = Middle
             };
 

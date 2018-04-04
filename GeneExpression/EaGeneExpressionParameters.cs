@@ -32,15 +32,15 @@ namespace GeneExpression
             ,List<IGenoTypeNode> possibleTerminals
 
             ,double functionProbability = 0.8
-            ,double constantProbability = 0.5
-            ,double parametertProbability = 0.5
+            ,double constantProbability = 0.1
+            ,double parameterProbability = 0.5
 
-            ,double parameterMinimum = -100
-            ,double parameterMaximum = 100
+            ,double parameterMinimum = -10
+            ,double parameterMaximum = 10
             ,bool parameterType = false
 
             ,double crossoverProbability = 0.7
-            ,double mutationProbability = 0.01
+            ,double mutationProbability = 0.1
 
             ,int populationSize = 100
             ,int numberOfGeneration = 100
@@ -59,7 +59,7 @@ namespace GeneExpression
 
             FunctionProbability = functionProbability;
             ConstantProbability = constantProbability;
-            ParameterProbability = parametertProbability;
+            ParameterProbability = parameterProbability;
 
             ParameterMinimum = parameterMinimum;
             ParameterMaximum = parameterMaximum;

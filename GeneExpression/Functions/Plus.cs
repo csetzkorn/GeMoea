@@ -12,7 +12,7 @@ namespace GeneExpression.Functions
         {
             var returnObject = new Plus
             {
-                FunctionName = FunctionName,
+                FunctionName = string.Copy(FunctionName),
                 Middle = Middle
             };
 

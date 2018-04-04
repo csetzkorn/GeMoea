@@ -1,64 +1,84 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace EvolutionaryAlgorithm.NSGA2
 {
     public class Nsga2Crowder
     {
-        public static List<IObjectiveValues> CalculateCrowdingDistances(List<IObjectiveValues> objectiveValuesList)
+        private static List<IObjectiveValues> NormaliseObjectiveValues(List<IObjectiveValues> objectiveValuesList, int numberOfObjectives, int numberOfObjectiveVectors, ref decimal[] mins, ref decimal[] maxs)
         {
-            var numberOfObjectives = objectiveValuesList[0].Values.Length;
-            var numberOfArrays = objectiveValuesList.Count;
-            var mins = new double[numberOfObjectives];
-            var maxs = new double[numberOfObjectives];
-
-            for (var i = 0; i < numberOfArrays; i++)
+            for (var c1 = 0; c1 < numberOfObjectiveVectors; c1++)
             {
-                if (i == 0)
+                for (var c2 = 0; c2 < numberOfObjectives; c2++)
                 {
-                    for (var i1 = 0; i1 < numberOfObjectives; i1++)
+                    var currentValue = objectiveValuesList[c1].Values[c2];
+                    if (currentValue < mins[c2])
                     {
-                        mins[i1] = objectiveValuesList[i].Values[i1];
-                        maxs[i1] = objectiveValuesList[i].Values[i1];
+                        mins[c2] = currentValue;
+                    }
+                    if (currentValue > maxs[c2])
+                    {
+                        maxs[c2] = currentValue;
                     }
                 }
-                else
+            }
+
+            for (var c1 = 0; c1 < numberOfObjectiveVectors; c1++)
+            {
+                for (var c2 = 0; c2 < numberOfObjectives; c2++)
                 {
-                    for (var i1 = 0; i1 < numberOfObjectives; i1++)
-                    {
-                        if (mins[i1] > objectiveValuesList[i].Values[i1])
-                        {
-                            mins[i1] = objectiveValuesList[i].Values[i1];
-                        }
-                        if (maxs[i1] < objectiveValuesList[i].Values[i1])
-                        {
-                            maxs[i1] = objectiveValuesList[i].Values[i1];
-                        }
-                    }
+                    objectiveValuesList[c1].Values[c2] =
+                        (objectiveValuesList[c1].Values[c2] - mins[c2]) / (maxs[c2] - mins[c2]);
                 }
+            }
+
+            return objectiveValuesList;
+        }
+
+        public static List<IObjectiveValues> CalculateCrowdingDistances(List<IObjectiveValues> objectiveValuesList)
+        {           
+            var numberOfObjectives = objectiveValuesList[0].Values.Length;
+            var numberOfObjectiveVectors = objectiveValuesList.Count;
+            var mins = new decimal[numberOfObjectives];
+            var maxs = new decimal[numberOfObjectives];
+
+            for (var c = 0; c < numberOfObjectives; c++)
+            {
+                mins[c] = decimal.MaxValue;
+                maxs[c] = 0;
+            }
+
+            objectiveValuesList = NormaliseObjectiveValues(objectiveValuesList, numberOfObjectives, numberOfObjectiveVectors, ref mins, ref maxs);
+
+            for (var c1 = 0; c1 < numberOfObjectiveVectors; c1++)
+            {
+                objectiveValuesList[c1].CrowdingDistance = 0;
             }
 
             for (var dimension = 0; dimension < numberOfObjectives; dimension++)
             {
                 objectiveValuesList = objectiveValuesList.OrderBy(i => i.Values[dimension]).ToList();
 
-                for (var i = 0; i < numberOfArrays; i++)
+                for (var i = 0; i < numberOfObjectiveVectors; i++)
                 {
-                    if (i == 0 || i == (numberOfArrays - 1))
+                    if (i == 0 || i == (numberOfObjectiveVectors - 1))
                     {
-                        objectiveValuesList[i].CrowdingDistance = objectiveValuesList[i].CrowdingDistance + double.MaxValue;
+                        objectiveValuesList[i].CrowdingDistance = decimal.MaxValue;
                     }
                     else
                     {
-                        objectiveValuesList[i].CrowdingDistance = objectiveValuesList[i].CrowdingDistance +
-                        ((objectiveValuesList[i + 1].Values[dimension] +
-                         objectiveValuesList[i - 1].Values[dimension]) / (maxs[dimension] - mins[dimension]));
-                    }
-
-                    if (double.IsNaN(objectiveValuesList[i].CrowdingDistance) ||
-                        double.IsInfinity(objectiveValuesList[i].CrowdingDistance))
-                    {
-                        objectiveValuesList[i].CrowdingDistance = double.MaxValue;
+                        try
+                        {
+                            objectiveValuesList[i].CrowdingDistance = objectiveValuesList[i].CrowdingDistance +
+                                                                      ((objectiveValuesList[i + 1].Values[dimension] -
+                                                                        objectiveValuesList[i - 1].Values[dimension]) / (maxs[dimension] - mins[dimension]));
+                        }
+                        catch (Exception e)
+                        {
+                            objectiveValuesList[i].CrowdingDistance = decimal.MaxValue;
+                        }
+                        
                     }
                 }
             }

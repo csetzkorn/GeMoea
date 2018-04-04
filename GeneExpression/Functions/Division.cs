@@ -11,7 +11,7 @@
         {
             var returnObject = new Division
             {
-                FunctionName = FunctionName,
+                FunctionName = string.Copy(FunctionName),
                 Middle = Middle
             };
 

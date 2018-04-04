@@ -11,7 +11,7 @@
         {
             var returnObject = new Sinus
             {
-                FunctionName = FunctionName,
+                FunctionName = string.Copy(FunctionName),
                 Middle = Middle
             };
 

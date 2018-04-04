@@ -11,6 +11,46 @@ namespace GeneExpression
             RootNode = Parse(genoTypeNodes);
         }
 
+        public static int GetNumberOfNodes(List<IGenoTypeNode> genoTypeNodes)
+        {
+            var nodeQueue = new Queue<IPhenoTypeNode>();
+            int numberOfNodes = 0;
+
+            var root = new PhenoTypeNode();
+            nodeQueue.Enqueue(root);
+
+            foreach (var genoTypeNode in genoTypeNodes)
+            {
+                if (nodeQueue.Count == 0)
+                {
+                    break;
+                }
+
+                numberOfNodes++;
+
+                var node = nodeQueue.Dequeue();
+                node.Expression = genoTypeNode.ToString(); ;
+                node.Middle = genoTypeNode.Middle;
+
+                var nodeArity = genoTypeNode.GetArity();
+
+                if (nodeArity == 1)
+                {
+                    node.Left = new PhenoTypeNode();
+                    nodeQueue.Enqueue(node.Left);
+                }
+                else if (nodeArity == 2)
+                {
+                    node.Left = new PhenoTypeNode();
+                    nodeQueue.Enqueue(node.Left);
+                    node.Right = new PhenoTypeNode();
+                    nodeQueue.Enqueue(node.Right);
+                }
+            }
+
+            return numberOfNodes;
+        }
+
         private IPhenoTypeNode Parse(List<IGenoTypeNode> genoTypeNodes)
         {
             var nodeQueue = new Queue<IPhenoTypeNode>();

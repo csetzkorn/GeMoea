@@ -11,7 +11,7 @@
         {
             var returnObject = new SquareRoot
             {
-                FunctionName = FunctionName,
+                FunctionName = string.Copy(FunctionName),
                 Middle = Middle
             };
 

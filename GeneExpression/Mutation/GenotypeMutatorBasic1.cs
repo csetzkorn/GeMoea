@@ -20,25 +20,45 @@ namespace GeneExpression.Mutation
         {
             if (!(UniformRandomGenerator.GetContinousRandomNumber(0, 1.0) <= EaGeneExpressionParameters.MutationProbability)) return;
 
-            var before = genoType.ToString();
+            var randomNumber = UniformRandomGenerator.GetContinousRandomNumber(0, 1.0);
 
-            var index = UniformRandomGenerator.GetIntegerRandomNumber(0, genoType.GenoTypeNodes.Count - 1);
-
-            if (genoType.GenoTypeNodes[index].GetType() == typeof(ParameterTerminal))
+            if (randomNumber <= 0.3)
             {
-                // TODO improve
-                ((ParameterTerminal) genoType.GenoTypeNodes[index]).Value = ((ParameterTerminal)genoType.GenoTypeNodes[index]).Value +
-                    UniformRandomGenerator.GetContinousRandomNumber(-10, 10);
+                genoType = GenoTypeFactory.GetGenoType();
             }
             else
             {
-                if (index < EaGeneExpressionParameters.MaximumNumberOfHeadNodes)
+                //var index = UniformRandomGenerator.GetIntegerRandomNumber(0, genoType.GenoTypeNodes.Count - 1);
+                var numberOfNodes = PhenoTypeTree.GetNumberOfNodes(genoType.GenoTypeNodes);
+                var index = UniformRandomGenerator.GetIntegerRandomNumber(0, numberOfNodes - 1);
+
+                if (randomNumber <= 0.6)
                 {
-                    genoType.GenoTypeNodes[index] = GenoTypeFactory.GetFunctionOrTerminalNode();
+                    var node = genoType.GenoTypeNodes[index];
+                    genoType.GenoTypeNodes.RemoveAt(index);
+                    index = UniformRandomGenerator.GetIntegerRandomNumber(0, genoType.GenoTypeNodes.Count - 1);
+                    genoType.GenoTypeNodes.Insert(index, node);
+                    
                 }
                 else
                 {
-                    genoType.GenoTypeNodes[index] = GenoTypeFactory.GetTerminalNode();
+                    if (genoType.GenoTypeNodes[index].GetType() == typeof(ParameterTerminal))
+                    {
+                        ((ParameterTerminal)genoType.GenoTypeNodes[index]).Value =
+                            ((ParameterTerminal)genoType.GenoTypeNodes[index]).Value +
+                            UniformRandomGenerator.GetContinousRandomNumber(-3.0, 3.0);
+                    }
+                    else
+                    {
+                        if (index < EaGeneExpressionParameters.MaximumNumberOfHeadNodes)
+                        {
+                            genoType.GenoTypeNodes[index] = GenoTypeFactory.GetFunctionOrTerminalNode();
+                        }
+                        else
+                        {
+                            genoType.GenoTypeNodes[index] = GenoTypeFactory.GetTerminalNode();
+                        }
+                    }
                 }
             }
         }

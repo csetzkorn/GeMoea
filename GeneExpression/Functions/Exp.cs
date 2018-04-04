@@ -11,7 +11,7 @@
         {
             var returnObject = new Exp
             {
-                FunctionName = FunctionName,
+                FunctionName = string.Copy(FunctionName),
                 Middle = Middle
             };
 

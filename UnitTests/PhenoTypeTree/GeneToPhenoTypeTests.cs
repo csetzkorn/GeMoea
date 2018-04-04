@@ -10,6 +10,48 @@ namespace UnitTests.PhenoTypeTree
     public class GeneToPhenoTypeTests
     {
         [Fact]
+        public void CanGetNumberOfNodesTest1()
+        {
+            var list = new List<IGenoTypeNode>
+            {
+                new SquareRoot(),
+                new Multiplication(),
+                new Plus(),
+                new Minus(),
+                new FeatureTerminal("a"),
+                new FeatureTerminal("b"),
+                new FeatureTerminal("c"),
+                new FeatureTerminal("d")
+            };
+
+            var numberOfNodes = GeneExpression.PhenoTypeTree.GetNumberOfNodes(list);
+
+            Assert.Equal(8, numberOfNodes);
+        }
+
+        [Fact]
+        public void CanGetNumberOfNodesTest2()
+        {
+            var list = new List<IGenoTypeNode>
+            {
+                new Multiplication(),
+                new FeatureTerminal("a"),
+                new FeatureTerminal("b"),
+                new Multiplication(),
+                new Plus(),
+                new Minus(),
+                new FeatureTerminal("a"),
+                new FeatureTerminal("b"),
+                new FeatureTerminal("c"),
+                new FeatureTerminal("d")
+            };
+
+            var numberOfNodes = GeneExpression.PhenoTypeTree.GetNumberOfNodes(list);
+
+            Assert.Equal(3, numberOfNodes);
+        }
+
+        [Fact]
         public void CanTranslateTest1()
         {
             var list = new List<IGenoTypeNode>
