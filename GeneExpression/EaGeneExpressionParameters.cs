@@ -31,12 +31,12 @@ namespace GeneExpression
             ,List<IGenoTypeNode> possibleFunctions
             ,List<IGenoTypeNode> possibleTerminals
 
-            ,double functionProbability = 0.8
+            ,double functionProbability = 0.6
             ,double constantProbability = 0.1
             ,double parameterProbability = 0.5
 
-            ,double parameterMinimum = -10
-            ,double parameterMaximum = 10
+            ,double parameterMinimum = -100
+            ,double parameterMaximum = 100
             ,bool parameterType = false
 
             ,double crossoverProbability = 0.7

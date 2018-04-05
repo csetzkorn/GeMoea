@@ -8,10 +8,27 @@ namespace EvolutionaryAlgorithm.NSGA2
     {
         private static List<IObjectiveValues> NormaliseObjectiveValues(List<IObjectiveValues> objectiveValuesList, int numberOfObjectives, int numberOfObjectiveVectors, ref decimal[] mins, ref decimal[] maxs)
         {
+
+            var secondLargestNumber = objectiveValuesList.Select(x => x.Values[0]).Distinct().ToList().OrderByDescending(x  => x).Skip(1).FirstOrDefault();
+
+            for (var c = 0; c < numberOfObjectiveVectors; c++)
+            {
+                if (objectiveValuesList[c].Invalid)
+                {
+                    objectiveValuesList[c].Values[0] = secondLargestNumber;
+                }
+            }
+
             for (var c1 = 0; c1 < numberOfObjectiveVectors; c1++)
             {
                 for (var c2 = 0; c2 < numberOfObjectives; c2++)
                 {
+                    // TODO improve this
+                    if (c2 == 0 && objectiveValuesList[c1].Invalid)
+                    {
+                        objectiveValuesList[c1].Values[c2] = secondLargestNumber - 1;
+                    }
+
                     var currentValue = objectiveValuesList[c1].Values[c2];
                     if (currentValue < mins[c2])
                     {
@@ -49,7 +66,11 @@ namespace EvolutionaryAlgorithm.NSGA2
                 maxs[c] = 0;
             }
 
+            //var test1 = objectiveValuesList.OrderBy(i => i.Values[0]).ToList();
+
             objectiveValuesList = NormaliseObjectiveValues(objectiveValuesList, numberOfObjectives, numberOfObjectiveVectors, ref mins, ref maxs);
+
+            //var test2 = objectiveValuesList.OrderBy(i => i.Values[0]).ToList();
 
             for (var c1 = 0; c1 < numberOfObjectiveVectors; c1++)
             {
@@ -62,23 +83,30 @@ namespace EvolutionaryAlgorithm.NSGA2
 
                 for (var i = 0; i < numberOfObjectiveVectors; i++)
                 {
-                    if (i == 0 || i == (numberOfObjectiveVectors - 1))
+                    if (objectiveValuesList[i].Invalid)
                     {
-                        objectiveValuesList[i].CrowdingDistance = decimal.MaxValue;
+                        objectiveValuesList[i].CrowdingDistance = 0;
                     }
                     else
                     {
-                        try
-                        {
-                            objectiveValuesList[i].CrowdingDistance = objectiveValuesList[i].CrowdingDistance +
-                                                                      ((objectiveValuesList[i + 1].Values[dimension] -
-                                                                        objectiveValuesList[i - 1].Values[dimension]) / (maxs[dimension] - mins[dimension]));
-                        }
-                        catch (Exception e)
+                        if (i == 0 || i == (numberOfObjectiveVectors - 1))
                         {
                             objectiveValuesList[i].CrowdingDistance = decimal.MaxValue;
                         }
-                        
+                        else
+                        {
+                            try
+                            {
+                                objectiveValuesList[i].CrowdingDistance = objectiveValuesList[i].CrowdingDistance +
+                                                                          ((objectiveValuesList[i + 1].Values[dimension] -
+                                                                            objectiveValuesList[i - 1].Values[dimension]) / (maxs[dimension] - mins[dimension]));
+                            }
+                            catch (Exception e)
+                            {
+                                objectiveValuesList[i].CrowdingDistance = 0;
+                            }
+
+                        }
                     }
                 }
             }

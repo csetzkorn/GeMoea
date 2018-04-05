@@ -12,6 +12,9 @@ namespace EvolutionaryAlgorithm
         decimal CrowdingDistance { get; set; }
         IList<IObjectiveValues> DominatingObjectiveValues { get; set; }
         Guid IndividualGuid { get; set; }
+        bool Invalid { get; set; }
+
+        string ExpressionForDebugging { get; set; }
 
         List<KeyValuePair<string, decimal>> GetObjectiveValues();
         void Reset();

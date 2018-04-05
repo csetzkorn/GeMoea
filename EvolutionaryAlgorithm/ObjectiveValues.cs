@@ -16,6 +16,9 @@ namespace EvolutionaryAlgorithm
         public int Rank { get; set; }
         public decimal CrowdingDistance { get; set; }
         public IList<IObjectiveValues> DominatingObjectiveValues { get; set; }
+        public bool Invalid { get; set; }
+
+        public string ExpressionForDebugging { get; set; }
 
         public ObjectiveValues(decimal[] values, string[] names, Guid individualGuid)
         {

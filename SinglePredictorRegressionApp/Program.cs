@@ -29,6 +29,21 @@ namespace SinglePredictorRegressionApp
             var crossOverator = new GenoTypeCrossoveratorBasic1(randomGenerator, eaGeneExpressionParameters);
 
             var populationP = GetFirstPopulation(eaGeneExpressionParameters, parameterTerminalFactory, genoTypeFactory);
+            var listOfObjectiveValuesP = new List<IObjectiveValues>();
+            for (var c = 0; c < populationP.Count; c++)
+            {
+                var objectiveValues = GetObjectiveValues(target, dataSet, populationP[c]);
+                listOfObjectiveValuesP.Add(objectiveValues);
+            }
+            listOfObjectiveValuesP = Nsga2TournamentSelector.PerformSelection(eaGeneExpressionParameters.TournamentSize, listOfObjectiveValuesP, randomGenerator);
+
+            var tempPopulation = new List<Individual>();
+            foreach (var objectiveValues in listOfObjectiveValuesP)
+            {
+                var indy = populationP.FirstOrDefault(x => x.Guid == objectiveValues.IndividualGuid);
+                tempPopulation.Add((Individual)indy.Clone());
+            }
+            populationP = tempPopulation;
 
             for (var generation = 0; generation < eaGeneExpressionParameters.NumberOfGeneration; generation++)
             {
@@ -45,48 +60,39 @@ namespace SinglePredictorRegressionApp
                     mutator.PerformMutation(ref individual.GenoType);
                 }
 
-                var listOfObjectiveValuesQ = new List<IObjectiveValues>();
-                for (var c = 0; c < populationP.Count; c++)
-                {
-                    var objectiveValues = GetObjectiveValues(target, dataSet, populationQ[c]);
-                    listOfObjectiveValuesQ.Add(objectiveValues);
-                }
-                listOfObjectiveValuesQ = Nsga2TournamentSelector.PerformSelection(eaGeneExpressionParameters.TournamentSize, listOfObjectiveValuesQ, randomGenerator);
-
-                var listOfObjectiveValuesP = new List<IObjectiveValues>();
-                for (var c = 0; c < populationP.Count; c++)
-                {
-                    var objectiveValues = GetObjectiveValues(target, dataSet, populationP[c]);
-                    listOfObjectiveValuesP.Add(objectiveValues);
-                }
-                listOfObjectiveValuesP = Nsga2Ranker.Rank(listOfObjectiveValuesP);
-                listOfObjectiveValuesP = Nsga2Crowder.CalculateCrowdingDistances(listOfObjectiveValuesP);
-
+                var combinedPopulation = new List<Individual>();
                 var combinedlistOfObjectiveValues = new List<IObjectiveValues>();
-                foreach (var objectiveValues in listOfObjectiveValuesP)
+                foreach (var individual in populationP)
                 {
+                    var clone = (Individual)individual.Clone();
+                    combinedPopulation.Add(clone);
+                    var objectiveValues = GetObjectiveValues(target, dataSet, clone);
                     combinedlistOfObjectiveValues.Add(objectiveValues);
                 }
-                foreach (var objectiveValues in listOfObjectiveValuesQ)
+                foreach (var individual in populationQ)
                 {
+                    var clone = (Individual)individual.Clone();
+                    combinedPopulation.Add(clone);
+                    var objectiveValues = GetObjectiveValues(target, dataSet, clone);
                     combinedlistOfObjectiveValues.Add(objectiveValues);
-                }
+                }    
+                
+                combinedlistOfObjectiveValues = Nsga2Ranker.Rank(combinedlistOfObjectiveValues);
+                combinedlistOfObjectiveValues = Nsga2Crowder.CalculateCrowdingDistances(combinedlistOfObjectiveValues);
 
                 combinedlistOfObjectiveValues = combinedlistOfObjectiveValues.OrderBy(i => i.Rank).ThenByDescending(i => i.CrowdingDistance).ToList();
 
-                var tempPopulation = new List<Individual>();
+                tempPopulation = new List<Individual>();
                 var counter = 0;
                 var smallestMse = decimal.MaxValue;
                 decimal largestMse = 0;
                 var smallestPosition = -1;
                 foreach (var objectiveValues in combinedlistOfObjectiveValues)
                 {
-                    var indy = populationP.FirstOrDefault(x => x.Guid == objectiveValues.IndividualGuid) ?? populationQ.FirstOrDefault(x => x.Guid == objectiveValues.IndividualGuid);
-
+                    var indy = combinedPopulation.FirstOrDefault(x => x.Guid == objectiveValues.IndividualGuid);
                     tempPopulation.Add((Individual)indy.Clone());
-                    counter++;
 
-                    var ovs = GetObjectiveValues(target, dataSet, indy);
+                    var ovs = GetObjectiveValues(target, dataSet, combinedPopulation.FirstOrDefault(x => x.Guid == objectiveValues.IndividualGuid));
                     if (ovs.Values[0] < smallestMse)
                     {
                         smallestMse = ovs.Values[0];
@@ -98,6 +104,7 @@ namespace SinglePredictorRegressionApp
                         largestMse = ovs.Values[0];
                     }
 
+                    counter++;
                     if (counter == eaGeneExpressionParameters.PopulationSize)
                     {
                         break;
@@ -162,9 +169,9 @@ namespace SinglePredictorRegressionApp
 
             var expression = new Expression(stringExpresssion);
 
-            var numberOfRows = (decimal) dataSet.MappedData.GetLength(0);
-            var mae = 0m;
-            var rmse = 0m;
+            var numberOfRows = (double) dataSet.MappedData.GetLength(0);
+            double mae = 0;
+            //var rmse = 0m;
             var maxError = 0m;
             for (var row = 0; row < numberOfRows; row++)
             {
@@ -179,70 +186,73 @@ namespace SinglePredictorRegressionApp
 
                     if (double.IsNaN(prediction) || double.IsInfinity(prediction))
                     {
-                        mae = decimal.MaxValue;
-                        rmse = decimal.MaxValue;
-                        maxError = decimal.MaxValue;
+                        mae = double.MaxValue;
+                        //rmse = decimal.MaxValue;
+                        //maxError = decimal.MaxValue;
                         break;
                     }
 
                     var error = prediction - target.Values[row];
                     var absError = Math.Abs(error);
 
-                    if (absError > (double) maxError)
-                    {
-                        if (absError <= (double) decimal.MaxValue)
-                        {
-                            maxError = (decimal)absError; 
-                        }
-                        else
-                        {
-                            maxError = decimal.MaxValue;
-                        }
-                    }
+                    //if (absError > (double) maxError)
+                    //{
+                    //    if (absError <= (double) decimal.MaxValue)
+                    //    {
+                    //        maxError = (decimal)absError; 
+                    //    }
+                    //    else
+                    //    {
+                    //        maxError = decimal.MaxValue;
+                    //    }
+                    //}
                     
-                    try
-                    {
-                        mae = mae + (decimal) Math.Abs(error);
-                        rmse = rmse + (decimal)Math.Pow(error, 2);
-                    }
-                    catch (Exception e)
-                    {
-                        mae = decimal.MaxValue;
-                        rmse = decimal.MaxValue;
-                        maxError = decimal.MaxValue;
-                        break;
-                    }
+                    mae = mae + Math.Abs(error);
                 }
                 else
                 {
-                    mae = decimal.MaxValue;
-                    rmse = decimal.MaxValue;
-                    maxError = decimal.MaxValue;
+                    mae = double.MaxValue;
+                    //rmse = decimal.MaxValue;
+                    //maxError = decimal.MaxValue;
                     break;
                 }
             }
 
-            if (mae != decimal.MaxValue)
+            if (mae != double.MaxValue)
             {
-                mae = mae / numberOfRows;
+                mae = Math.Log( mae + 1.0 );
+                //mae = mae / numberOfRows;
             }
 
-            if (rmse != decimal.MaxValue)
+            var fix = 13;
+            if (mae >= (double) decimal.MaxValue)
             {
-                rmse = Sqrt( rmse / numberOfRows);
+                mae = fix;
             }
+
+
+            //if (rmse != decimal.MaxValue)
+            //{
+                //rmse = Sqrt( rmse / numberOfRows);
+            //}
 
             var numberOfNodes = PhenoTypeTree.GetNumberOfNodes(individual.GenoType.GenoTypeNodes);
-            var numberOfCharacters = stringExpresssion.Length;
+            //var numberOfCharacters = stringExpresssion.Length;
             //var distinctNumberOfFeatures = mappedColumnsUsedInExpression.Count;
 
             //Console.WriteLine(mse + " " + numberOfOpenBrackets);
             //            string[] names = { "sMape", "OpenBrackets", "Mse" };
             //            double[] values = { sMape, numberOfOpenBrackets, mse };
-            string[] names = { "mae", "numberOfNodes", "numberOfCharacters" };
-            decimal[] values = { mae, numberOfNodes, numberOfCharacters };
-            var objectiveValues = new ObjectiveValues(values, names, individual.Guid);
-            
+            string[] names = { "mae", "numberOfNodes" };
+            decimal[] values = { (decimal) mae, numberOfNodes };
+            var objectiveValues =
+                new ObjectiveValues(values, names, individual.Guid) {ExpressionForDebugging = stringExpresssion};
+            if (mae == fix)
+            {
+                objectiveValues.Invalid = true;
+            }
+
+
             return objectiveValues;
         }
 
@@ -289,8 +299,8 @@ namespace SinglePredictorRegressionApp
                 new Plus(),
                 new Minus(),
                 new Cosinus(),
-                new Exp(),
-                new SquareRoot(),
+                //new Exp(),
+                //new SquareRoot(),
                 new Sinus()
             };
 
@@ -300,7 +310,7 @@ namespace SinglePredictorRegressionApp
                 possibleTerminals.Add(new FeatureTerminal(mappedColumn.Key));
             }
 
-            return new EaGeneExpressionParameters(20, possibleFunctions, possibleTerminals, populationSize:1000, mutationProbability:0.5, tournamentSize:3, numberOfGeneration:500);
+            return new EaGeneExpressionParameters(10, possibleFunctions, possibleTerminals, populationSize:500, mutationProbability:0.3, tournamentSize:2, numberOfGeneration:500);
         }
 
         public static List<Individual> GetFirstPopulation(IEaGeneExpressionParameters eaGeneExpressionParameters, IParameterTerminalFactory parameterTerminalFactory, IGenoTypeFactory genoTypeFactory)

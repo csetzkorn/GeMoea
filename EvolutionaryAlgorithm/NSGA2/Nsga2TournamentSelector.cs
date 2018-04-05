@@ -8,47 +8,46 @@ namespace EvolutionaryAlgorithm.NSGA2
     {
         public static List<IObjectiveValues> PerformSelection(int tournamentSize, List<IObjectiveValues> originalObjectiveValues, IUniformRandomGenerator randomGenerator)
         {
+            originalObjectiveValues = originalObjectiveValues.Where(x => x.Invalid == false).ToList();
+
             var populationSize = originalObjectiveValues.Count;
             originalObjectiveValues = Nsga2Ranker.Rank(originalObjectiveValues);
             originalObjectiveValues = Nsga2Crowder.CalculateCrowdingDistances(originalObjectiveValues);
-            var newPopulation = new List<IObjectiveValues>();
+            var newPopulationObjectiveValues = new List<IObjectiveValues>();
 
             do
             {
                 var indices = new List<int>();
-                var individuals = new List<IObjectiveValues>();
+                var pickedObjectiveValues = new List<IObjectiveValues>();
                 do
                 {
                     var index = randomGenerator.GetIntegerRandomNumber(0, originalObjectiveValues.Count - 1);
-                    if (indices.Contains(index) == false)
-                    {
-                        indices.Add(index);
-                        individuals.Add(originalObjectiveValues[index]);
-                    }
-
+                    if (indices.Contains(index)) continue;
+                    indices.Add(index);
+                    pickedObjectiveValues.Add(originalObjectiveValues[index]);
                 } while (indices.Count() < tournamentSize);
 
-                individuals = individuals.OrderBy(i => i.Rank).ToList();
-                //.ThenByDescending(i => i.CrowdingDistance).
-                if (individuals[0].Rank == individuals[1].Rank)
+                pickedObjectiveValues = pickedObjectiveValues.OrderBy(i => i.Rank).ToList();
+
+                if (pickedObjectiveValues[0].Rank == pickedObjectiveValues[1].Rank)
                 {
-                    if (individuals[1].CrowdingDistance > individuals[0].CrowdingDistance)
+                    if (pickedObjectiveValues[1].CrowdingDistance > pickedObjectiveValues[0].CrowdingDistance)
                     {
-                        newPopulation.Add(individuals[1]);
+                        newPopulationObjectiveValues.Add(pickedObjectiveValues[1]);
                     }
                     else
                     {
-                        newPopulation.Add(individuals[0]);
+                        newPopulationObjectiveValues.Add(pickedObjectiveValues[0]);
                     }
                 }
                 else
                 {
-                    newPopulation.Add(individuals[0]);
+                    newPopulationObjectiveValues.Add(pickedObjectiveValues[0]);
                 }
                 
-            } while (newPopulation.Count < populationSize);
+            } while (newPopulationObjectiveValues.Count < populationSize);
 
-            return newPopulation;
+            return newPopulationObjectiveValues;
         }
     }
 }
